@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEX — Profile</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.profile-banner{height:220px;position:relative;overflow:hidden;margin-top:calc(var(--nav-h)+32px);background:var(--bg2)}
+.banner-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0c0c0c 0%,#151515 50%,#0a0a0a 100%)}
+.banner-grid{position:absolute;inset:0;opacity:.035;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:36px 36px}
+.banner-strip{position:absolute;inset:0;display:flex;overflow:hidden}
+.banner-img{flex-shrink:0;height:100%;width:110px;object-fit:cover;opacity:.07;filter:grayscale(100%)}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(8,8,8,.2) 0%,rgba(8,8,8,.96) 100%)}
+
+.profile-wrap{max-width:var(--max-w);margin:0 auto;padding:0 2rem 4rem}
+.profile-head{display:flex;align-items:flex-end;gap:1.5rem;margin-top:-60px;position:relative;z-index:2;margin-bottom:1.5rem;flex-wrap:wrap}
+.profile-avatar{width:110px;height:110px;border-radius:50%;border:3px solid var(--border);flex-shrink:0;background:var(--bg3);overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,0.6);position:relative}
+.avatar-inner{width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:38px;font-weight:700;color:var(--text2)}
+.avatar-edit{position:absolute;bottom:4px;right:4px;width:26px;height:26px;border-radius:50%;background:var(--bg4);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text2);cursor:pointer;transition:all .2s}
+.avatar-edit:hover{background:var(--white);color:#000}
+.profile-meta{flex:1;padding-bottom:8px}
+.profile-name{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--white);margin-bottom:3px;letter-spacing:-.5px}
+.profile-handle{font-size:13px;color:var(--text3);margin-bottom:5px}
+.profile-bio{font-size:13px;color:var(--text2);line-height:1.5;max-width:400px}
+.profile-actions{display:flex;gap:8px;padding-bottom:8px;flex-shrink:0}
+
+/* STATS — 6 cells now with hours */
+.stats-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);margin-bottom:1.5rem}
+.stat-cell{background:var(--bg2);padding:1.1rem .8rem;text-align:center;transition:background .2s;cursor:default}
+.stat-cell:hover{background:var(--bg3)}
+.stat-num{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--white);display:block;margin-bottom:3px}
+.stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px}
+
+.profile-tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.ptab{padding:10px 18px;font-size:13px;font-weight:500;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
+.ptab.active{color:var(--white);border-bottom-color:var(--white)}
+.ptab:hover{color:var(--text2)}
+
+.profile-layout{display:grid;grid-template-columns:1fr 280px;gap:2rem}
+.profile-main{min-width:0}
+
+.notice{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--text2);margin-bottom:1.5rem;display:flex;align-items:center;gap:10px}
+
+/* CONTINUE WATCHING — whole card goes to anime, play btn goes to watch */
+.continue-list{display:flex;flex-direction:column;gap:8px;margin-bottom:2rem}
+.continue-card{
+  display:flex;gap:12px;padding:12px;
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--radius);transition:all .15s;position:relative;
+}
+.continue-card:hover{background:var(--glass-md);border-color:var(--border-hi)}
+/* Make the card link cover everything except the play button */
+.continue-card-link{
+  position:absolute;inset:0;border-radius:var(--radius);
+  z-index:1;
+}
+.ci-thumb{width:72px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;background:var(--bg3);z-index:2;position:relative}
+.ci-info{flex:1;min-width:0;z-index:2;position:relative}
+.ci-title{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--white);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-ep{font-size:12px;color:var(--text2);margin-bottom:3px}
+.ci-ep-detail{font-size:11px;color:var(--text3);margin-bottom:7px}
+.ci-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:3px}
+.ci-fill{height:100%;background:var(--white);border-radius:2px}
+.ci-pct{font-size:10px;color:var(--text3)}
+.ci-play{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--white);color:#000;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:all .2s;flex-shrink:0;
+  align-self:center;z-index:3;position:relative;
+  text-decoration:none;
+}
+.ci-play:hover{background:#e0e0e0;transform:scale(1.07)}
+
+/* H ROW */
+.h-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;margin-bottom:2rem}
+.h-row::-webkit-scrollbar{height:3px}
+.h-card{flex-shrink:0;width:130px;border-radius:var(--radius);overflow:hidden;background:var(--glass);border:1px solid var(--border);cursor:pointer;transition:transform .2s,border-color .2s;display:block}
+.h-card:hover{transform:translateY(-4px);border-color:var(--border-hi)}
+.h-card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:var(--bg3)}
+.h-card-bar{height:2px;background:var(--border)}
+.h-card-fill{height:100%;background:var(--white)}
+.h-card-body{padding:8px}
+.h-card-title{font-size:11px;font-weight:500;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:3px}
+.h-card-meta{font-size:10px;color:var(--text3)}
+
+/* HEATMAP */
+.heatmap-grid{display:grid;grid-template-columns:repeat(52,1fr);gap:3px;margin:12px 0 8px}
+.hcell{aspect-ratio:1;border-radius:2px;background:var(--bg3)}
+.hcell.l1{background:rgba(255,255,255,.12)}
+.hcell.l2{background:rgba(255,255,255,.28)}
+.hcell.l3{background:rgba(255,255,255,.5)}
+.hcell.l4{background:rgba(255,255,255,.85)}
+.heatmap-legend{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.hleg{width:11px;height:11px;border-radius:2px}
+
+/* SIDEBAR WIDGETS */
+.sw{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;margin-bottom:1rem}
+.sw-title{font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--white);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.sw-title::before{content:'';width:3px;height:13px;border-radius:2px;background:var(--white);display:block}
+.status-rows{display:flex;flex-direction:column;gap:5px}
+.status-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:7px;background:var(--glass);border:1px solid var(--border)}
+.status-left{display:flex;align-items:center;gap:8px}
+.status-dot{width:8px;height:8px;border-radius:50%}
+.status-name{font-size:12px;color:var(--text2)}
+.status-count{font-size:12px;font-weight:600;color:var(--white);font-family:var(--font-display)}
+.gbar-list{display:flex;flex-direction:column;gap:9px}
+.gbar-row{display:flex;align-items:center;gap:8px}
+.gbar-label{font-size:11px;color:var(--text2);width:85px;flex-shrink:0;text-align:right}
+.gbar-track{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.gbar-fill{height:100%;background:var(--white);border-radius:3px;transition:width .8s ease}
+.gbar-count{font-size:10px;color:var(--text3);width:22px;text-align:right}
+.score-dist{display:flex;align-items:flex-end;gap:4px;height:55px;margin-top:8px}
+.sdbar{flex:1;border-radius:3px 3px 0 0;min-height:3px}
+
+@media(max-width:900px){
+  .profile-layout{grid-template-columns:1fr}
+  .stats-strip{grid-template-columns:repeat(3,1fr)}
+  .profile-head{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<script>injectNav('');</script>
+
+<div class="page" style="padding-top:0">
+  <div class="profile-banner">
+    <div class="banner-bg"></div>
+    <div class="banner-grid"></div>
+    <div class="banner-strip" id="bannerStrip"></div>
+    <div class="banner-overlay"></div>
+  </div>
+
+  <div class="profile-wrap">
+    <div class="profile-head">
+      <div class="profile-avatar">
+        <div class="avatar-inner">AX</div>
+        <button class="avatar-edit"><i class="fa-solid fa-pen"></i></button>
+      </div>
+      <div class="profile-meta">
+        <div class="profile-name">AnimeFan</div>
+        <div class="profile-handle">@animefan · Member since 2025</div>
+        <div class="profile-bio">Watching anime since forever. Currently obsessed with seasonal isekai and mecha.</div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn-white" onclick="alert('Edit profile — backend needed!')"><i class="fa-solid fa-pen"></i> Edit</button>
+        <button class="btn-glass" onclick="alert('Connect AniList — backend needed!')"><i class="fa-solid fa-link"></i> AniList</button>
+      </div>
+    </div>
+
+    <!-- STATS — 6 including hours -->
+    <div class="stats-strip">
+      <div class="stat-cell"><span class="stat-num" id="sWatched">0</span><div class="stat-lbl">Watched</div></div>
+      <div class="stat-cell"><span class="stat-num" id="sEps">0</span><div class="stat-lbl">Episodes</div></div>
+      <div class="stat-cell"><span class="stat-num" id="sDays">0</span><div class="stat-lbl">Days</div></div>
+      <div class="stat-cell"><span class="stat-num" id="sHours">0</span><div class="stat-lbl">Hours</div></div>
+      <div class="stat-cell"><span class="stat-num" id="sScore">—</span><div class="stat-lbl">Mean Score</div></div>
+      <div class="stat-cell"><span class="stat-num" id="sPlan">0</span><div class="stat-lbl">Plan to Watch</div></div>
+    </div>
+
+    <div class="profile-tabs">
+      <button class="ptab active" onclick="setTab('overview',this)">Overview</button>
+      <button class="ptab" onclick="setTab('watching',this)">Watching</button>
+      <button class="ptab" onclick="setTab('completed',this)">Completed</button>
+      <button class="ptab" onclick="setTab('planned',this)">Plan to Watch</button>
+      <button class="ptab" onclick="setTab('history',this)">History</button>
+    </div>
+
+    <div class="profile-layout">
+      <div class="profile-main" id="profileMain">
+        <div class="notice"><i class="fa-solid fa-circle-info" style="color:var(--text3)"></i> Connect a backend + database to persist lists, history, and progress.</div>
+
+        <!-- CONTINUE WATCHING -->
+        <div class="sec-header">
+          <div class="sec-title">Continue Watching</div>
+          <span style="font-size:12px;color:var(--text3)" id="continueCount">0 titles</span>
+        </div>
+        <div class="continue-list" id="continueList"></div>
+
+        <div class="sec-header"><div class="sec-title">Currently Watching</div><a href="browse.html" class="sec-link">View all <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="h-row" id="watchingRow"></div>
+
+        <div class="sec-header"><div class="sec-title">Plan to Watch</div><a href="browse.html" class="sec-link">View all <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="h-row" id="planRow"></div>
+
+        <div class="sec-header"><div class="sec-title">Watch Activity</div></div>
+        <div>
+          <div class="heatmap-grid" id="heatmap"></div>
+          <div class="heatmap-legend">Less <div class="hleg" style="background:var(--bg3)"></div><div class="hleg hcell l1"></div><div class="hleg hcell l2"></div><div class="hleg hcell l3"></div><div class="hleg hcell l4"></div> More</div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="sw">
+          <div class="sw-title">List Status</div>
+          <div class="status-rows">
+            <div class="status-row"><div class="status-left"><div class="status-dot" style="background:#4ade80"></div><div class="status-name">Watching</div></div><div class="status-count">12</div></div>
+            <div class="status-row"><div class="status-left"><div class="status-dot" style="background:#60a5fa"></div><div class="status-name">Completed</div></div><div class="status-count">130</div></div>
+            <div class="status-row"><div class="status-left"><div class="status-dot" style="background:#facc15"></div><div class="status-name">Plan to Watch</div></div><div class="status-count">58</div></div>
+            <div class="status-row"><div class="status-left"><div class="status-dot" style="background:var(--text3)"></div><div class="status-name">On Hold</div></div><div class="status-count">4</div></div>
+            <div class="status-row"><div class="status-left"><div class="status-dot" style="background:#f87171"></div><div class="status-name">Dropped</div></div><div class="status-count">8</div></div>
+          </div>
+        </div>
+        <div class="sw">
+          <div class="sw-title">Top Genres</div>
+          <div class="gbar-list" id="genreBars"></div>
+        </div>
+        <div class="sw">
+          <div class="sw-title">Score Distribution</div>
+          <div class="score-dist" id="scoreDist"></div>
+          <div style="display:flex;gap:4px;margin-top:4px">${Array.from({length:10},(_,i)=>`<div style="flex:1;text-align:center;font-size:9px;color:var(--text3)">${i+1}</div>`).join('')}</div>
+        </div>
+        <div class="sw">
+          <div class="sw-title">Trending Picks</div>
+          <div id="trendingPicks"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="footerMount"></div>
+</div>
+
+<script>
+document.getElementById('footerMount').innerHTML = buildFooter();
+
+// ── AUTH GUARD + USER DATA ────────────────────────────────────────────────
+(function(){
+  if (!requireAuthPage()) return;
+  const user = JSON.parse(localStorage.getItem('animex_user') || '{}');
+  const username = user.username || user.email?.split('@')[0] || 'User';
+  const initial = username[0].toUpperCase();
+  // Avatar
+  if (user.avatarUrl) {
+    document.querySelector('.avatar-inner').innerHTML = `<img src="${user.avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    document.querySelector('.avatar-inner').textContent = initial;
+  }
+  document.querySelector('.profile-name').textContent = username;
+  const joined = user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
+  document.querySelector('.profile-handle').textContent = `@${username.toLowerCase()} · Member since ${joined}`;
+})()
+
+const MOCK_CONTINUE=[
+  {id:21,    ep:847,total:1122,pct:75, season:null},
+  {id:16498, ep:14, total:25,  pct:56, season:1},
+  {id:9253,  ep:20, total:24,  pct:83, season:1},
+  {id:1535,  ep:7,  total:25,  pct:28, season:4},
+];
+const MOCK_WATCHING=[21,11061,9253,20,1535,16498];
+const MOCK_PLANNED =[22319,101922,113415,98478,1,5,889,74];
+
+async function loadProfile(){
+  // Banner
+  const bd=await gqlFetch(`{Page(perPage:12){media(sort:POPULARITY_DESC,type:ANIME,isAdult:false){id coverImage{large}}}}`);
+  document.getElementById('bannerStrip').innerHTML=(bd?.data?.Page?.media||[]).map(a=>
+    `<img class="banner-img" src="${a.coverImage?.large||''}" loading="lazy" alt="">`
+  ).join('');
+
+  // Continue watching
+  const cQ=MOCK_CONTINUE.map((c,i)=>`c${i}:Media(id:${c.id}){id title{english romaji}coverImage{large}episodes format}`).join(' ');
+  const cd=await gqlFetch(`{${cQ}}`);
+  const cList=Object.values(cd?.data||{});
+  document.getElementById('continueCount').textContent=`${cList.length} titles`;
+  document.getElementById('continueList').innerHTML=cList.map((a,i)=>{
+    const mc=MOCK_CONTINUE[i];
+    const t=a.title?.english||a.title?.romaji||'';
+    const epText=mc.season?`Season ${mc.season} · Ep ${mc.ep}`:`Episode ${mc.ep}`;
+    const totalText=mc.total?` / ${mc.total}`:'';
+    return `<div class="continue-card">
+      <!-- Full card link → anime detail page -->
+      <a href="anime.html?id=${a.id}" class="continue-card-link" title="View ${t}"></a>
+      <img class="ci-thumb" src="${a.coverImage?.large||''}" alt="${t}" loading="lazy">
+      <div class="ci-info">
+        <div class="ci-title">${t}</div>
+        <div class="ci-ep">${epText}${totalText}</div>
+        <div class="ci-ep-detail">${a.format||'TV'} · ${mc.pct}% complete</div>
+        <div class="ci-bar"><div class="ci-fill" style="width:${mc.pct}%"></div></div>
+        <div class="ci-pct">${mc.ep}${totalText} episodes</div>
+      </div>
+      <!-- Play button → watch page -->
+      <a href="watch.html?id=${a.id}&ep=${mc.ep}" class="ci-play" title="Continue watching">
+        <i class="fa-solid fa-play"></i>
+      </a>
+    </div>`;
+  }).join('');
+
+  // Watching row
+  const wQ=MOCK_WATCHING.map((id,i)=>`w${i}:Media(id:${id}){id title{english romaji}coverImage{large}episodes}`).join(' ');
+  const wd=await gqlFetch(`{${wQ}}`);
+  document.getElementById('watchingRow').innerHTML=Object.values(wd?.data||{}).map(a=>{
+    const t=a.title?.english||a.title?.romaji||'';
+    const pct=Math.floor(Math.random()*85)+10;
+    return `<a href="anime.html?id=${a.id}" class="h-card">
+      <img src="${a.coverImage?.large||''}" alt="${t}" loading="lazy">
+      <div class="h-card-bar"><div class="h-card-fill" style="width:${pct}%"></div></div>
+      <div class="h-card-body"><div class="h-card-title">${t}</div><div class="h-card-meta">${pct}% done</div></div>
+    </a>`;
+  }).join('');
+
+  // Plan row
+  const pQ=MOCK_PLANNED.map((id,i)=>`p${i}:Media(id:${id}){id title{english romaji}coverImage{large}format}`).join(' ');
+  const pd=await gqlFetch(`{${pQ}}`);
+  document.getElementById('planRow').innerHTML=Object.values(pd?.data||{}).map(a=>{
+    const t=a.title?.english||a.title?.romaji||'';
+    return `<a href="anime.html?id=${a.id}" class="h-card">
+      <img src="${a.coverImage?.large||''}" alt="${t}" loading="lazy">
+      <div class="h-card-body"><div class="h-card-title">${t}</div><div class="h-card-meta">${a.format||'TV'}</div></div>
+    </a>`;
+  }).join('');
+
+  // Trending picks
+  const td=await gqlFetch(`{Page(perPage:5){media(sort:TRENDING_DESC,type:ANIME,isAdult:false){id title{english romaji}coverImage{medium}averageScore}}}`);
+  document.getElementById('trendingPicks').innerHTML=(td?.data?.Page?.media||[]).map(a=>{
+    const t=a.title.english||a.title.romaji;
+    const sc=a.averageScore?(a.averageScore/10).toFixed(1):'?';
+    return `<a href="anime.html?id=${a.id}" style="display:flex;gap:8px;padding:7px;border-radius:8px;transition:background .15s;border:1px solid transparent;margin-bottom:3px;text-decoration:none;color:inherit" onmouseover="this.style.background='var(--glass-md)';this.style.borderColor='var(--border)'" onmouseout="this.style.background='';this.style.borderColor='transparent'">
+      <img src="${a.coverImage?.medium||''}" style="width:38px;height:52px;object-fit:cover;border-radius:6px;flex-shrink:0;background:var(--bg3)" loading="lazy" alt="${t}">
+      <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3;margin-bottom:3px">${t}</div><div style="font-size:10px;color:rgba(255,215,0,0.8);font-weight:600">★ ${sc}</div></div>
+    </a>`;
+  }).join('');
+
+  // Stats — hours = days * 24 roughly
+  countUp('sWatched',142);
+  countUp('sEps',3847);
+  countUp('sDays',67);
+  countUp('sHours',1608); // 67 days * 24
+  setTimeout(()=>document.getElementById('sScore').textContent='8.2',400);
+  countUp('sPlan',58);
+
+  // Genre bars
+  const genres=[['Action',89],['Fantasy',76],['Romance',61],['Sci-Fi',44],['Comedy',38],['Mystery',27]];
+  document.getElementById('genreBars').innerHTML=genres.map(([g,n])=>
+    `<div class="gbar-row"><div class="gbar-label">${g}</div><div class="gbar-track"><div class="gbar-fill" style="width:0%" data-w="${n}%"></div></div><div class="gbar-count">${Math.round(n*.88)}</div></div>`
+  ).join('');
+  setTimeout(()=>document.querySelectorAll('.gbar-fill').forEach(el=>el.style.width=el.dataset.w),200);
+
+  // Score dist
+  const scores=[0,1,3,5,8,14,22,31,18,9];
+  const maxS=Math.max(...scores);
+  document.getElementById('scoreDist').innerHTML=scores.map((v,i)=>{
+    const h=Math.max(3,Math.round((v/maxS)*100));
+    const op=i>=7?1:i>=5?.55:i>=3?.3:.12;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="sdbar" style="height:${h}%;width:100%;background:rgba(255,255,255,${op})"></div></div>`;
+  }).join('');
+
+  // Heatmap
+  const cells=Array(364).fill(0).map(()=>Math.random()<.28?Math.ceil(Math.random()*4):0);
+  document.getElementById('heatmap').innerHTML=cells.map(v=>`<div class="hcell${v?` l${v}`:''}"></div>`).join('');
+}
+
+function countUp(id,target){
+  const el=document.getElementById(id);let v=0;
+  const step=Math.ceil(target/50);
+  const t=setInterval(()=>{v=Math.min(v+step,target);el.textContent=v.toLocaleString();if(v>=target)clearInterval(t)},25);
+}
+
+function setTab(tab,btn){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const labels={watching:'Currently Watching',completed:'Completed',planned:'Plan to Watch',history:'Watch History'};
+  if(tab!=='overview'){
+    document.getElementById('profileMain').innerHTML=`
+      <div class="notice"><i class="fa-solid fa-circle-info" style="color:var(--text3)"></i> "${labels[tab]}" requires backend integration to display saved data.</div>
+      <div style="text-align:center;padding:5rem 2rem;color:var(--text3)">
+        <i class="fa-solid fa-database" style="font-size:48px;margin-bottom:1.5rem;display:block;opacity:.15"></i>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text2);margin-bottom:.6rem">${labels[tab]}</div>
+        <div style="font-size:14px;line-height:1.7;max-width:360px;margin:0 auto">Connect a backend database to persist your lists. The frontend is ready.</div>
+        <button onclick="setTab('overview',document.querySelector('.ptab'))" style="margin-top:2rem;padding:10px 22px;border-radius:8px;background:var(--glass-hi);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font-body)"><i class="fa-solid fa-arrow-left"></i> Back to Overview</button>
+      </div>`;
+  }
+}
+
+loadProfile();
+</script>
+</body>
+</html>

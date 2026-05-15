@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEX — Watch Anime Free</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ── HERO ── */
+.landing-hero{
+  min-height:100vh;display:flex;align-items:center;
+  position:relative;overflow:hidden;
+  padding:calc(var(--nav-h)+80px) 2rem 5rem;
+}
+.hero-bg-reel{
+  position:absolute;inset:0;z-index:0;
+  display:flex;gap:0;overflow:hidden;
+}
+.hero-bg-img{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  opacity:0;transition:opacity 1.6s ease;
+}
+.hero-bg-img.active{opacity:.1}
+.hero-bg-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right,rgba(8,8,8,.98) 0%,rgba(8,8,8,.85) 45%,rgba(8,8,8,.4) 100%);
+  z-index:1;
+}
+.hero-inner{
+  position:relative;z-index:2;
+  max-width:var(--max-w);margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--glass-md);border:1px solid var(--border);
+  border-radius:100px;padding:6px 16px;
+  font-size:11px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text2);margin-bottom:1.8rem;
+}
+.hero-pulse{width:6px;height:6px;border-radius:50%;background:var(--white);animation:hpulse 1.5s ease infinite}
+@keyframes hpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+.hero-h1{
+  font-family:var(--font-display);
+  font-size:clamp(44px,5.5vw,78px);
+  font-weight:700;line-height:.95;letter-spacing:-2.5px;
+  color:var(--white);margin-bottom:1.5rem;
+}
+.hero-h1 em{font-style:normal;color:var(--text3);display:block}
+.hero-sub{font-size:16px;color:var(--text2);line-height:1.7;max-width:460px;margin-bottom:2.2rem}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:3rem}
+.hero-stats{
+  display:flex;gap:2.5rem;
+  padding-top:2rem;border-top:1px solid var(--border);
+}
+.hstat-val{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--white)}
+.hstat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+
+/* POSTER GRID — fixed no zoom */
+.hero-posters{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:auto auto;
+  gap:10px;
+}
+.hposter{
+  border-radius:14px;overflow:hidden;position:relative;
+  cursor:pointer;transition:transform .3s;
+  border:1px solid var(--border);background:var(--bg3);
+}
+.hposter:hover{transform:translateY(-5px)}
+/* all posters standard portrait */
+.hposter{aspect-ratio:2/3}
+/* first one taller spanning 2 rows */
+.hposter:nth-child(1){grid-row:span 2;aspect-ratio:unset}
+.hposter img{
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center top;
+  display:block;
+}
+.hposter-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 45%);
+  display:flex;align-items:flex-end;padding:12px;
+}
+.hposter-title{font-size:11px;font-weight:600;color:var(--white);line-height:1.2}
+
+/* REQUEST BOX */
+.request-section{
+  padding:5rem 2rem;position:relative;z-index:2;
+  background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.02),transparent);
+}
+.request-inner{max-width:700px;margin:0 auto;text-align:center}
+.request-box{
+  background:var(--glass-md);border:1px solid var(--border);
+  border-radius:20px;padding:3rem;
+  backdrop-filter:blur(20px);
+  box-shadow:0 30px 80px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.request-title{font-family:var(--font-display);font-size:28px;font-weight:700;letter-spacing:-1px;color:var(--white);margin-bottom:.6rem}
+.request-sub{font-size:14px;color:var(--text2);margin-bottom:1.8rem;line-height:1.6}
+.request-form{display:flex;flex-direction:column;gap:10px}
+.request-input{
+  background:var(--glass);border:1px solid var(--border);border-radius:9px;
+  padding:11px 16px;font-size:14px;color:var(--text);
+  font-family:var(--font-body);outline:none;transition:border-color .2s;
+}
+.request-input:focus{border-color:var(--border-hi)}
+.request-input::placeholder{color:var(--text3)}
+.request-textarea{min-height:80px;resize:vertical}
+.request-row{display:flex;gap:10px}
+.request-submit{
+  background:var(--white);color:#000;padding:11px 28px;
+  border-radius:9px;font-size:13px;font-weight:700;
+  font-family:var(--font-body);cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:7px;justify-content:center;
+  border:none;flex-shrink:0;
+}
+.request-submit:hover{background:#e0e0e0}
+
+/* FEATURES */
+.features-section{padding:5rem 2rem;position:relative;z-index:2}
+.features-inner{max-width:var(--max-w);margin:0 auto}
+.features-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;margin-top:2.5rem;
+}
+.feature-tile{
+  background:var(--bg2);padding:2.2rem;position:relative;overflow:hidden;
+  transition:background .2s;
+}
+.feature-tile:hover{background:var(--bg3)}
+.feature-icon{
+  width:42px;height:42px;border-radius:10px;
+  background:var(--glass-md);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:var(--text2);margin-bottom:1.2rem;
+}
+.feature-title{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--white);margin-bottom:.5rem}
+.feature-desc{font-size:13px;color:var(--text3);line-height:1.6}
+
+/* MARQUEE — NO hover pause */
+.marquee-section{
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:13px 0;overflow:hidden;background:var(--glass);
+  position:relative;z-index:2;
+}
+.marquee-track{
+  display:flex;white-space:nowrap;
+  animation:marquee 32s linear infinite;
+  /* NO hover pause — intentional */
+}
+.marquee-item{
+  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--text3);padding:0 2.5rem;border-right:1px solid var(--border);
+  flex-shrink:0;
+}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* WEEKLY SHOWCASE */
+.showcase-section{padding:4rem 2rem;position:relative;z-index:2}
+.showcase-inner{max-width:var(--max-w);margin:0 auto}
+.showcase-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:12px;margin-top:1.5rem;
+}
+
+@media(max-width:1000px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-posters{display:none}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .showcase-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:600px){
+  .features-grid{grid-template-columns:1fr}
+  .showcase-grid{grid-template-columns:repeat(2,1fr)}
+  .request-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<script>injectNav('');</script>
+
+<div class="page" style="padding-top:0">
+
+  <!-- HERO -->
+  <section class="landing-hero">
+    <div class="hero-bg-reel" id="heroBgReel"></div>
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-eyebrow"><div class="hero-pulse"></div>Free · HD · Sub &amp; Dub</div>
+        <h1 class="hero-h1">Watch Anime<em>Without Limits.</em></h1>
+        <p class="hero-sub">Thousands of anime series and movies updated daily. Sub, dub, HD — no account needed to start watching.</p>
+        <div class="hero-actions">
+          <a href="home.html" class="btn-white"><i class="fa-solid fa-play"></i> Start Watching</a>
+          <a href="browse.html" class="btn-glass"><i class="fa-solid fa-compass"></i> Browse Catalog</a>
+        </div>
+        <div class="hero-stats">
+          <div><div class="hstat-val">10K+</div><div class="hstat-lbl">Titles</div></div>
+          <div><div class="hstat-val">HD</div><div class="hstat-lbl">Quality</div></div>
+          <div><div class="hstat-val">Daily</div><div class="hstat-lbl">Updates</div></div>
+          <div><div class="hstat-val">Sub+Dub</div><div class="hstat-lbl">Available</div></div>
+        </div>
+      </div>
+      <div class="hero-posters" id="heroPosterGrid">
+        <div class="hposter shimmer" style="grid-row:span 2"></div>
+        <div class="hposter shimmer"></div>
+        <div class="hposter shimmer"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+
+  <!-- WEEKLY POPULAR -->
+  <section class="showcase-section">
+    <div class="showcase-inner">
+      <div class="sec-header">
+        <div class="sec-title">Popular This Week</div>
+        <a href="browse.html?filter=weekly" class="sec-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="showcase-grid" id="showcaseGrid">
+        ${Array(6).fill(0).map(()=>`<div class="anime-card" style="pointer-events:none"><div class="card-poster shimmer" style="aspect-ratio:2/3"></div><div class="card-body"><div class="shimmer" style="height:12px;border-radius:4px;margin-bottom:5px"></div><div class="shimmer" style="height:10px;width:55%;border-radius:4px"></div></div></div>`).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="features-inner">
+      <div style="max-width:460px;margin-bottom:0">
+        <div class="sec-title" style="margin-bottom:.8rem">Why ANIMEX</div>
+        <p style="font-size:15px;color:var(--text2);line-height:1.7">Built for real anime fans. Fast, clean, always up to date.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-tile"><div class="feature-icon"><i class="fa-solid fa-bolt"></i></div><div class="feature-title">Instant Playback</div><p class="feature-desc">Multiple servers per episode. Switch in one click if one fails.</p></div>
+        <div class="feature-tile"><div class="feature-icon"><i class="fa-solid fa-language"></i></div><div class="feature-title">Sub &amp; Dub</div><p class="feature-desc">Toggle between subbed and dubbed for every available title.</p></div>
+        <div class="feature-tile"><div class="feature-icon"><i class="fa-solid fa-calendar-day"></i></div><div class="feature-title">Daily Updates</div><p class="feature-desc">New episodes within hours of Japan broadcast.</p></div>
+        <div class="feature-tile"><div class="feature-icon"><i class="fa-solid fa-magnifying-glass"></i></div><div class="feature-title">Smart Search</div><p class="feature-desc">Find any title by name, genre, studio, year, or season.</p></div>
+        <div class="feature-tile"><div class="feature-icon"><i class="fa-solid fa-mobile-screen"></i></div><div class="feature-title">Any Device</div><p class="feature-desc">Fully responsive on desktop, tablet, and mobile.</p></div>
+        <div class="feature-tile"><div class="feature-icon"><i class="fa-solid fa-film"></i></div><div class="feature-title">Massive Library</div><p class="feature-desc">Classics to this season's newest shows. All in one place.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REQUEST ANIME -->
+  <section class="request-section">
+    <div class="request-inner">
+      <div class="request-box">
+        <div style="font-size:32px;margin-bottom:1rem">📬</div>
+        <div class="request-title">Can't find an anime?</div>
+        <p class="request-sub">Request it and we'll look into adding it to the library. We read every submission.</p>
+        <div class="request-form">
+          <div class="request-row">
+            <input type="text" class="request-input" placeholder="Anime title (required)" id="reqTitle" style="flex:1">
+            <input type="text" class="request-input" placeholder="Your name (optional)" style="flex:.6">
+          </div>
+          <textarea class="request-input request-textarea" placeholder="Any extra details? Season, year, alternate title..." id="reqNotes"></textarea>
+          <button class="request-submit" onclick="submitRequest()">
+            <i class="fa-solid fa-paper-plane"></i> Submit Request
+          </button>
+        </div>
+        <div id="reqConfirm" style="display:none;margin-top:1rem;font-size:13px;color:var(--text2);background:var(--glass);padding:10px 16px;border-radius:8px;border:1px solid var(--border)">
+          <i class="fa-solid fa-check" style="color:#4ade80"></i> Request submitted! We'll look into it.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footerMount"></div>
+</div>
+
+<script>
+document.getElementById('footerMount').innerHTML = buildFooter();
+
+// Marquee
+const GENRES = ['Action','Adventure','Comedy','Drama','Fantasy','Horror','Isekai','Mecha','Mystery','Psychological','Romance','Sci-Fi','Seinen','Shounen','Slice of Life','Sports','Supernatural','Thriller'];
+const mt = document.getElementById('marqueeTrack');
+const items = [...GENRES,...GENRES,...GENRES,...GENRES].map(g=>`<span class="marquee-item">${g}</span>`).join('');
+mt.innerHTML = items;
+
+async function loadPage() {
+  // Weekly popular — use POPULARITY sort with JP filter for quality results
+  const d = await gqlFetch(`{Page(perPage:12){media(sort:TRENDING_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP",minimumTagRank:60){id title{english romaji}coverImage{large}averageScore format startDate{year}status}}}`);
+  const list = d?.data?.Page?.media || [];
+  document.getElementById('showcaseGrid').innerHTML = list.slice(0,6).map(a => buildCard(a)).join('');
+
+  // Hero bg rotating
+  const bgReel = document.getElementById('heroBgReel');
+  bgReel.innerHTML = list.slice(0,6).map((a,i)=>
+    `<div class="hero-bg-img${i===0?' active':''}" style="background-image:url(${a.coverImage?.large||''})"></div>`
+  ).join('');
+  let bgIdx = 0;
+  const bgSlides = bgReel.querySelectorAll('.hero-bg-img');
+  setInterval(() => {
+    bgSlides[bgIdx].classList.remove('active');
+    bgIdx = (bgIdx+1) % bgSlides.length;
+    bgSlides[bgIdx].classList.add('active');
+  }, 4500);
+
+  // Poster grid — portrait images, no landscape
+  const d2 = await gqlFetch(`{Page(perPage:6){media(sort:POPULARITY_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP",format:TV){id title{english romaji}coverImage{large}}}}`);
+  const plist = d2?.data?.Page?.media || [];
+  if (plist.length >= 3) {
+    document.getElementById('heroPosterGrid').innerHTML = plist.slice(0,3).map((a,i) => {
+      const t = a.title.english || a.title.romaji;
+      const rowSpan = i===0 ? 'grid-row:span 2;' : '';
+      return `<a href="anime.html?id=${a.id}" class="hposter" style="${rowSpan}">
+        <img src="${a.coverImage?.large||''}" alt="${t}" loading="${i===0?'eager':'lazy'}">
+        <div class="hposter-overlay"><div class="hposter-title">${t}</div></div>
+      </a>`;
+    }).join('');
+  }
+}
+
+function submitRequest() {
+  const title = document.getElementById('reqTitle').value.trim();
+  if (!title) { document.getElementById('reqTitle').focus(); return; }
+  document.getElementById('reqConfirm').style.display = 'block';
+  document.getElementById('reqTitle').value = '';
+  document.getElementById('reqNotes').value = '';
+  // Backend: POST the request to your API here
+}
+
+loadPage();
+</script>
+</body>
+</html>

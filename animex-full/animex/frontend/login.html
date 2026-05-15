@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ANIMEX — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/satoshi@latest/index.css">
+<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+<link rel="stylesheet" href="shared.css">
+<style>
+.auth-wrap{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:100px 16px 60px;position:relative;z-index:2;
+}
+.auth-card{
+  width:100%;max-width:420px;
+  background:rgba(16,16,16,0.85);
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  backdrop-filter:blur(24px);padding:40px 36px;
+  animation:fadeUp .4s ease;
+}
+.auth-logo{
+  font-family:var(--font-display);font-size:22px;font-weight:700;
+  letter-spacing:3px;color:var(--white);text-align:center;
+  margin-bottom:28px;text-decoration:none;display:block;
+}
+.auth-logo span{color:var(--text3)}
+.auth-tabs{
+  display:flex;gap:4px;background:var(--glass);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:4px;margin-bottom:28px;
+}
+.auth-tab{
+  flex:1;padding:9px;border-radius:6px;font-size:13px;font-weight:600;
+  color:var(--text2);transition:all .2s;cursor:pointer;text-align:center;
+}
+.auth-tab.active{background:var(--white);color:#000;}
+.field{margin-bottom:16px;}
+.field label{
+  display:block;font-size:11px;font-weight:700;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:7px;
+}
+.field-wrap{position:relative;}
+.field-wrap i{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  font-size:13px;color:var(--text3);pointer-events:none;
+}
+.field input{
+  width:100%;padding:12px 14px 12px 38px;
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:14px;color:var(--text);
+  font-family:var(--font-body);outline:none;transition:border-color .2s,background .2s;
+  box-sizing:border-box;
+}
+.field input:focus{border-color:var(--border-hi);background:var(--glass-md);}
+.field input::placeholder{color:var(--text3);}
+.field input.error{border-color:rgba(255,80,80,0.5);}
+.pw-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  font-size:13px;color:var(--text3);cursor:pointer;transition:color .2s;padding:4px;
+}
+.pw-toggle:hover{color:var(--text);}
+.field-hint{font-size:11px;color:var(--text3);margin-top:5px;}
+.field-error{font-size:11px;color:rgba(255,90,90,0.9);margin-top:5px;display:none;}
+.field-error.show{display:block;}
+.forgot{
+  display:block;text-align:right;font-size:12px;color:var(--text3);
+  text-decoration:none;margin-top:-8px;margin-bottom:16px;transition:color .2s;
+}
+.forgot:hover{color:var(--text);}
+.btn-auth{
+  width:100%;padding:13px;background:var(--white);color:#000;
+  border-radius:var(--radius-sm);font-size:14px;font-weight:700;
+  font-family:var(--font-body);cursor:pointer;border:none;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:4px;
+}
+.btn-auth:hover:not(:disabled){background:#e0e0e0;transform:translateY(-1px);}
+.btn-auth:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-auth .spinner{
+  width:16px;height:16px;border:2px solid rgba(0,0,0,0.3);
+  border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite;display:none;
+}
+.btn-auth.loading .spinner{display:block;}
+.btn-auth.loading .btn-text{display:none;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.auth-divider{
+  display:flex;align-items:center;gap:12px;margin:20px 0;
+}
+.auth-divider::before,.auth-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.auth-divider span{font-size:11px;color:var(--text3);white-space:nowrap;}
+.btn-oauth{
+  width:100%;padding:11px;background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--text);
+  font-family:var(--font-body);cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+}
+.btn-oauth:hover{background:var(--glass-hi);border-color:var(--border-hi);color:var(--white);}
+.btn-oauth img{width:17px;height:17px;}
+.alert{
+  padding:11px 14px;border-radius:var(--radius-sm);font-size:13px;
+  margin-bottom:16px;display:none;align-items:flex-start;gap:9px;
+}
+.alert.show{display:flex;}
+.alert-error{background:rgba(255,60,60,0.08);border:1px solid rgba(255,60,60,0.2);color:rgba(255,120,120,0.95);}
+.alert-success{background:rgba(80,255,140,0.07);border:1px solid rgba(80,255,140,0.18);color:rgba(100,240,160,0.95);}
+.tos{font-size:11px;color:var(--text3);text-align:center;margin-top:16px;line-height:1.6;}
+.tos a{color:var(--text2);text-decoration:underline;text-decoration-style:dotted;}
+.strength-bar{height:3px;border-radius:2px;margin-top:6px;background:var(--bg4);overflow:hidden;}
+.strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0;}
+/* Panel switching */
+#panelLogin,#panelSignup,#panelForgot{display:none;}
+#panelLogin.active,#panelSignup.active,#panelForgot.active{display:block;}
+</style>
+</head>
+<body>
+<div class="orb-field">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <a href="index.html" class="auth-logo">ANIME<span>X</span></a>
+
+    <!-- Tabs -->
+    <div class="auth-tabs" id="authTabs">
+      <div class="auth-tab active" data-tab="login">Sign In</div>
+      <div class="auth-tab" data-tab="signup">Create Account</div>
+    </div>
+
+    <!-- ── LOGIN ─────────────────────────────── -->
+    <div id="panelLogin" class="active">
+      <div class="alert alert-error" id="loginError">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="loginErrorMsg">Invalid email or password.</span>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+          <span class="pw-toggle" onclick="togglePw('loginPassword',this)">
+            <i class="fa-solid fa-eye"></i>
+          </span>
+        </div>
+      </div>
+      <a href="#" class="forgot" onclick="showPanel('forgot');return false;">Forgot password?</a>
+      <button class="btn-auth" id="loginBtn" onclick="doLogin()">
+        <div class="spinner"></div>
+        <span class="btn-text">Sign In</span>
+      </button>
+      <div class="auth-divider"><span>or continue with</span></div>
+      <button class="btn-oauth" onclick="alert('Google OAuth coming soon')">
+        <img src="https://www.google.com/favicon.ico" alt="Google">
+        Continue with Google
+      </button>
+    </div>
+
+    <!-- ── SIGNUP ─────────────────────────────── -->
+    <div id="panelSignup">
+      <div class="alert alert-error" id="signupError">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="signupErrorMsg">Something went wrong.</span>
+      </div>
+      <div class="alert alert-success" id="signupSuccess">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Account created! Check your email to verify.</span>
+      </div>
+      <div class="field">
+        <label>Username</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-at"></i>
+          <input type="text" id="signupUsername" placeholder="cooluser123" autocomplete="username" oninput="validateUsername(this)">
+        </div>
+        <div class="field-error" id="usernameErr">3–20 chars, letters/numbers/underscores only.</div>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="signupPassword" placeholder="Min 8 characters" autocomplete="new-password" oninput="updateStrength(this)">
+          <span class="pw-toggle" onclick="togglePw('signupPassword',this)">
+            <i class="fa-solid fa-eye"></i>
+          </span>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="field-error" id="passwordErr">Password must be at least 8 characters.</div>
+      </div>
+      <div class="field">
+        <label>Confirm Password</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="signupConfirm" placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <div class="field-error" id="confirmErr">Passwords do not match.</div>
+      </div>
+      <button class="btn-auth" id="signupBtn" onclick="doSignup()">
+        <div class="spinner"></div>
+        <span class="btn-text">Create Account</span>
+      </button>
+      <p class="tos">By signing up you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="about.html">Terms of Use</a>.</p>
+    </div>
+
+    <!-- ── FORGOT PASSWORD ────────────────────── -->
+    <div id="panelForgot">
+      <div class="alert alert-success" id="forgotSuccess">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>If that email exists, a reset link was sent.</span>
+      </div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6;">
+        Enter your email and we'll send a password reset link.
+      </p>
+      <div class="field">
+        <label>Email</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+      <button class="btn-auth" id="forgotBtn" onclick="doForgot()">
+        <div class="spinner"></div>
+        <span class="btn-text">Send Reset Link</span>
+      </button>
+      <a href="#" style="display:block;text-align:center;font-size:12px;color:var(--text3);margin-top:16px;text-decoration:none;transition:color .2s"
+         onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'"
+         onclick="showPanel('login');return false;">
+        <i class="fa-solid fa-arrow-left" style="font-size:10px"></i> Back to Sign In
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = '/api'; // ← swap to prod URL
+
+// ─── PANEL SWITCHING ─────────────────────────────────────────────────────
+const tabs = document.getElementById('authTabs');
+
+function showPanel(name) {
+  ['login','signup','forgot'].forEach(p => {
+    document.getElementById('panelLogin'.replace('login', p === 'login' ? 'Login' : p === 'signup' ? 'Signup' : 'Forgot'))
+      ?.classList.remove('active');
+  });
+  document.getElementById('panel' + name[0].toUpperCase() + name.slice(1))?.classList.add('active');
+  tabs.style.display = name === 'forgot' ? 'none' : 'flex';
+  if (name !== 'forgot') {
+    tabs.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  }
+}
+
+tabs.querySelectorAll('.auth-tab').forEach(tab => {
+  tab.addEventListener('click', () => showPanel(tab.dataset.tab));
+});
+
+// ─── UTILS ───────────────────────────────────────────────────────────────
+function setLoading(btnId, on) {
+  document.getElementById(btnId).classList.toggle('loading', on);
+  document.getElementById(btnId).disabled = on;
+}
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  if (msg !== undefined) document.getElementById(id + 'Msg')?.innerText && (document.getElementById(id + 'Msg').innerText = msg);
+  el.classList.add('show');
+}
+function hideAlert(id) { document.getElementById(id)?.classList.remove('show'); }
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  const isText = inp.type === 'text';
+  inp.type = isText ? 'password' : 'text';
+  btn.querySelector('i').className = `fa-solid fa-eye${isText ? '' : '-slash'}`;
+}
+
+// ─── PASSWORD STRENGTH ────────────────────────────────────────────────────
+function updateStrength(inp) {
+  const v = inp.value;
+  let score = 0;
+  if (v.length >= 8) score++;
+  if (/[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  const fill = document.getElementById('strengthFill');
+  const colors = ['#ff4444','#ff8844','#ffcc44','#44ff88'];
+  fill.style.width = `${score * 25}%`;
+  fill.style.background = colors[score - 1] || 'transparent';
+}
+
+// ─── VALIDATION ──────────────────────────────────────────────────────────
+function validateUsername(inp) {
+  const ok = /^[a-zA-Z0-9_]{3,20}$/.test(inp.value);
+  inp.classList.toggle('error', !ok && inp.value.length > 0);
+  document.getElementById('usernameErr').classList.toggle('show', !ok && inp.value.length > 0);
+  return ok;
+}
+
+// ─── LOGIN ───────────────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  hideAlert('loginError');
+  if (!email || !password) { showAlert('loginError', 'Fill in all fields.'); return; }
+
+  setLoading('loginBtn', true);
+  try {
+    const r = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const d = await r.json();
+    if (!r.ok) { showAlert('loginError', d.error ?? 'Login failed.'); return; }
+    localStorage.setItem('animex_token', d.token);
+    localStorage.setItem('animex_user', JSON.stringify(d.user ?? { email, username: email.split('@')[0] }));
+    const next = new URLSearchParams(location.search).get('next');
+    window.location.href = next || 'home.html';
+  } catch {
+    showAlert('loginError', 'Connection error. Try again.');
+  } finally {
+    setLoading('loginBtn', false);
+  }
+}
+
+// ─── SIGNUP ──────────────────────────────────────────────────────────────
+async function doSignup() {
+  const username = document.getElementById('signupUsername').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const confirm = document.getElementById('signupConfirm').value;
+
+  hideAlert('signupError'); hideAlert('signupSuccess');
+  document.getElementById('passwordErr').classList.remove('show');
+  document.getElementById('confirmErr').classList.remove('show');
+
+  if (!validateUsername(document.getElementById('signupUsername'))) return;
+  if (password.length < 8) { document.getElementById('passwordErr').classList.add('show'); return; }
+  if (password !== confirm) { document.getElementById('confirmErr').classList.add('show'); return; }
+
+  setLoading('signupBtn', true);
+  try {
+    const r = await fetch(`${API}/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password }),
+    });
+    const d = await r.json();
+    if (!r.ok) { showAlert('signupError', d.error ?? 'Signup failed.'); return; }
+    document.getElementById('signupSuccess').classList.add('show');
+    document.getElementById('signupBtn').disabled = true;
+  } catch {
+    showAlert('signupError', 'Connection error. Try again.');
+  } finally {
+    setLoading('signupBtn', false);
+  }
+}
+
+// ─── FORGOT PASSWORD ─────────────────────────────────────────────────────
+async function doForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  hideAlert('forgotSuccess');
+  if (!email) return;
+
+  setLoading('forgotBtn', true);
+  try {
+    await fetch(`${API}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    // Always show success (server never reveals if email exists)
+    document.getElementById('forgotSuccess').classList.add('show');
+    document.getElementById('forgotBtn').disabled = true;
+  } finally {
+    setLoading('forgotBtn', false);
+  }
+}
+
+// ─── ENTER KEY ──────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const active = document.querySelector('[id^="panel"].active');
+  if (active?.id === 'panelLogin') doLogin();
+  else if (active?.id === 'panelSignup') doSignup();
+  else if (active?.id === 'panelForgot') doForgot();
+});
+
+// ─── REDIRECT IF ALREADY LOGGED IN ──────────────────────────────────────
+if (localStorage.getItem('animex_token')) window.location.href = 'home.html';
+</script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEX — Home</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* HERO */
+.hero-wrap{
+  position:relative;width:100%;height:500px;overflow:hidden;
+  margin-top:calc(var(--nav-h) + 32px);
+}
+.hero-slide{
+  position:absolute;inset:0;opacity:0;transition:opacity .8s ease;
+  background-size:cover;background-position:center 20%;
+}
+.hero-slide.active{opacity:1}
+.hero-slide::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to right,rgba(8,8,8,.96) 0%,rgba(8,8,8,.65) 40%,rgba(8,8,8,.1) 75%,transparent 100%);
+}
+.hero-slide::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:200px;
+  background:linear-gradient(to top,var(--bg),transparent);
+}
+.hero-content{
+  position:absolute;bottom:64px;left:2.5rem;
+  z-index:3;max-width:540px;
+}
+.hero-badges{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.hero-title{
+  font-family:var(--font-display);
+  font-size:clamp(24px,3.5vw,44px);
+  font-weight:700;line-height:1.0;letter-spacing:-1px;
+  color:var(--white);margin-bottom:10px;
+}
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.hero-meta-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.hero-desc{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.65;margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-btns{display:flex;gap:10px}
+
+/* SLIDER CONTROLS — centered on image */
+.slider-controls{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  z-index:4;display:flex;align-items:center;gap:10px;
+}
+.slider-arrow{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--white);font-size:12px;cursor:pointer;
+  transition:all .2s;backdrop-filter:blur(8px);
+}
+.slider-arrow:hover{background:rgba(255,255,255,0.22)}
+.slider-dots{display:flex;gap:6px;align-items:center}
+.slider-dot{
+  width:22px;height:3px;border-radius:2px;
+  background:rgba(255,255,255,0.2);cursor:pointer;
+  transition:all .3s;border:none;padding:0;
+}
+.slider-dot.active{width:36px;background:var(--white)}
+
+/* LAYOUT */
+.home-layout{
+  display:grid;grid-template-columns:1fr 295px;
+  max-width:var(--max-w);margin:0 auto;
+  padding:2rem 2rem 0;
+}
+.main-col{min-width:0;padding-right:2rem}
+.side-col{border-left:1px solid var(--border);padding-left:1.5rem}
+
+/* GRID */
+.anime-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(155px,1fr));
+  gap:14px;margin-bottom:2.5rem;
+}
+
+/* SIDEBAR */
+.sidebar-block{margin-bottom:2rem}
+.sidebar-title{
+  font-family:var(--font-display);font-size:14px;font-weight:600;
+  color:var(--white);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.sidebar-title::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--white);display:block}
+.sidebar-tabs{display:flex;gap:2px;margin-bottom:10px}
+
+/* TRENDING LIST */
+.trending-list{display:flex;flex-direction:column;gap:3px}
+.trending-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px;border-radius:9px;cursor:pointer;
+  transition:background .15s;border:1px solid transparent;
+}
+.trending-item:hover{background:var(--glass-md);border-color:var(--border)}
+.trend-rank{
+  font-family:var(--font-display);font-size:20px;font-weight:700;
+  color:var(--bg4);width:26px;flex-shrink:0;text-align:center;
+}
+.trend-rank.top{color:rgba(255,255,255,0.25)}
+.trend-thumb{width:44px;height:60px;object-fit:cover;border-radius:7px;flex-shrink:0;background:var(--bg3)}
+.trend-info{flex:1;min-width:0}
+.trend-title{font-size:12px;font-weight:500;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3;margin-bottom:3px}
+.trend-meta{font-size:10px;color:var(--text3);display:flex;gap:5px}
+.trend-score{color:#ffd700;font-weight:600}
+
+/* COMPACT LIST */
+.compact-list{display:flex;flex-direction:column;gap:4px}
+.compact-item{
+  display:flex;gap:9px;padding:8px;border-radius:9px;
+  cursor:pointer;transition:background .15s;border:1px solid transparent;
+}
+.compact-item:hover{background:var(--glass-md);border-color:var(--border)}
+.compact-thumb{width:42px;height:57px;object-fit:cover;border-radius:6px;flex-shrink:0;background:var(--bg3)}
+.compact-info{flex:1;min-width:0}
+.compact-title{font-size:12px;font-weight:500;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3;margin-bottom:3px}
+.compact-meta{font-size:10px;color:var(--text3);display:flex;gap:5px}
+
+@media(max-width:1000px){
+  .home-layout{grid-template-columns:1fr}
+  .side-col{border-left:none;border-top:1px solid var(--border);padding-left:0;padding-top:1.5rem}
+  .main-col{padding-right:0}
+}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<script>injectNav('home');</script>
+
+<div class="page" style="padding-top:0">
+
+  <!-- HERO -->
+  <div class="hero-wrap" id="heroWrap">
+    <div class="shimmer" style="height:100%"></div>
+  </div>
+  <div class="slider-controls" id="sliderControls" style="display:none">
+    <button class="slider-arrow" id="slidePrev"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="slider-dots" id="sliderDots"></div>
+    <button class="slider-arrow" id="slideNext"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+
+  <div class="home-layout">
+    <div class="main-col" id="mainCol">
+
+      <!-- Latest Updates — JP only, popular, no shorts/trash -->
+      <div class="sec-header">
+        <div class="sec-title">Latest Updates</div>
+        <div class="sec-tabs" id="updateTabs">
+          <button class="sec-tab active" onclick="setUpdateTab('all',this)">All</button>
+          <button class="sec-tab" onclick="setUpdateTab('sub',this)">Sub</button>
+          <button class="sec-tab" onclick="setUpdateTab('dub',this)">Dub</button>
+        </div>
+      </div>
+      <div class="anime-grid" id="latestGrid"></div>
+
+      <!-- Trending -->
+      <div class="sec-header">
+        <div class="sec-title">Trending Now</div>
+        <a href="browse.html?filter=trending" class="sec-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="anime-grid" id="trendingGrid"></div>
+
+      <!-- This Season -->
+      <div class="sec-header">
+        <div class="sec-title" id="seasonTitle">This Season</div>
+        <a href="browse.html?filter=seasonal" class="sec-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="anime-grid" id="seasonGrid"></div>
+
+      <!-- Movies -->
+      <div class="sec-header">
+        <div class="sec-title">Popular Movies</div>
+        <a href="browse.html?type=movie" class="sec-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="anime-grid" id="moviesGrid"></div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="side-col">
+      <div class="sidebar-block">
+        <div class="sidebar-title">Top Trending</div>
+        <div class="sidebar-tabs" id="trendTabs">
+          <button class="sec-tab active" onclick="loadTrending('now',this)">Now</button>
+          <button class="sec-tab" onclick="loadTrending('week',this)">Week</button>
+          <button class="sec-tab" onclick="loadTrending('alltime',this)">All Time</button>
+        </div>
+        <div class="trending-list" id="trendingList"></div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-title">New Releases</div>
+        <div class="compact-list" id="newList"></div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-title">Upcoming</div>
+        <div class="compact-list" id="upcomingList"></div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-title">Recently Completed</div>
+        <div class="compact-list" id="completedList"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="footerMount"></div>
+</div>
+
+<script>
+document.getElementById('footerMount').innerHTML = buildFooter();
+
+let heroSlides=[], heroIdx=0, heroTimer=null;
+
+// ── HERO ──
+async function loadHero(){
+  const d = await gqlFetch(`{Page(perPage:10){media(sort:TRENDING_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP",status:RELEASING){id title{romaji english}bannerImage coverImage{extraLarge large}description averageScore episodes genres format startDate{year}}}}`);
+  heroSlides = (d?.data?.Page?.media||[]).filter(a=>a.bannerImage);
+  if(!heroSlides.length) return;
+
+  document.getElementById('heroWrap').innerHTML = heroSlides.map((a,i)=>{
+    const t = a.title.english||a.title.romaji;
+    const sc = a.averageScore?(a.averageScore/10).toFixed(1):null;
+    const desc = a.description?a.description.replace(/<[^>]*>/g,'').slice(0,160)+'...':'';
+    const sub = Math.floor(Math.random()*12)+1;
+    const dub = Math.random()>.45?Math.floor(Math.random()*10)+1:null;
+    return `<div class="hero-slide${i===0?' active':''}" style="background-image:url(${a.bannerImage})">
+      <div class="hero-content">
+        <div class="hero-badges">
+          <span class="badge badge-sub">CC ${sub}</span>
+          ${dub?`<span class="badge badge-dub">DUB ${dub}</span>`:''}
+          <span class="badge badge-white">${a.format||'TV'}</span>
+          ${(a.genres||[]).slice(0,2).map(g=>`<span class="badge badge-white">${g}</span>`).join('')}
+        </div>
+        <div class="hero-title">${t}</div>
+        <div class="hero-meta">
+          ${sc?`<span class="badge badge-score">★ ${sc}</span>`:''}
+          ${a.startDate?.year?`<div class="hero-meta-item"><i class="fa-regular fa-calendar"></i>${a.startDate.year}</div>`:''}
+          ${a.episodes?`<div class="hero-meta-item"><i class="fa-solid fa-film"></i>${a.episodes} eps</div>`:`<div class="hero-meta-item">Ongoing</div>`}
+        </div>
+        <div class="hero-desc">${desc}</div>
+        <div class="hero-btns">
+          <a href="watch.html?id=${a.id}&ep=1" class="btn-white"><i class="fa-solid fa-play"></i> Watch Now</a>
+          <a href="anime.html?id=${a.id}" class="btn-glass"><i class="fa-solid fa-circle-info"></i> Details</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('sliderDots').innerHTML = heroSlides.map((_,i)=>
+    `<button class="slider-dot${i===0?' active':''}" onclick="goSlide(${i})"></button>`
+  ).join('');
+  document.getElementById('sliderControls').style.display='flex';
+  document.getElementById('slidePrev').onclick = ()=>goSlide((heroIdx-1+heroSlides.length)%heroSlides.length);
+  document.getElementById('slideNext').onclick = ()=>goSlide((heroIdx+1)%heroSlides.length);
+  startTimer();
+}
+function goSlide(i){
+  document.querySelectorAll('.hero-slide').forEach((s,idx)=>s.classList.toggle('active',idx===i));
+  document.querySelectorAll('.slider-dot').forEach((d,idx)=>d.classList.toggle('active',idx===i));
+  heroIdx=i; startTimer();
+}
+function startTimer(){clearInterval(heroTimer);heroTimer=setInterval(()=>goSlide((heroIdx+1)%heroSlides.length),6000)}
+
+// ── GRIDS — JP only, min popularity to filter trash ──
+function getSeason(){const m=new Date().getMonth()+1,y=new Date().getFullYear();return{season:m<=3?'WINTER':m<=6?'SPRING':m<=9?'SUMMER':'FALL',year:y}}
+
+async function loadGrids(){
+  const F=`id title{english romaji}coverImage{large}averageScore episodes status format startDate{year}`;
+  const {season,year}=getSeason();
+  ['latestGrid','trendingGrid','seasonGrid','moviesGrid'].forEach(id=>document.getElementById(id).innerHTML=skelCards(8));
+
+  // Latest updates: JP only, TV/ONA format, min popularity, sort by updated
+  const [latest,trending,seasonal,movies] = await Promise.all([
+    gqlFetch(`{Page(perPage:12){media(sort:UPDATED_AT_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP",status:RELEASING,format_in:[TV,ONA],averageScore_greater:60){${F}}}}`),
+    gqlFetch(`{Page(perPage:12){media(sort:TRENDING_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP"){${F}}}}`),
+    gqlFetch(`{Page(perPage:12){media(season:${season},seasonYear:${year},sort:POPULARITY_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP"){${F}}}}`),
+    gqlFetch(`{Page(perPage:8){media(format:MOVIE,sort:POPULARITY_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP"){${F}}}}`)
+  ]);
+
+  document.getElementById('latestGrid').innerHTML=(latest?.data?.Page?.media||[]).map(a=>buildCard(a)).join('');
+  document.getElementById('trendingGrid').innerHTML=(trending?.data?.Page?.media||[]).map(a=>buildCard(a)).join('');
+  document.getElementById('seasonGrid').innerHTML=(seasonal?.data?.Page?.media||[]).map(a=>buildCard(a)).join('');
+  document.getElementById('moviesGrid').innerHTML=(movies?.data?.Page?.media||[]).map(a=>buildCard(a)).join('');
+
+  const cap=s=>s.charAt(0)+s.slice(1).toLowerCase();
+  document.getElementById('seasonTitle').textContent=`${cap(season)} ${year}`;
+}
+
+// ── SIDEBAR ──
+function sideSkel(n){
+  return Array(n).fill(0).map(()=>`
+    <div class="compact-item" style="pointer-events:none">
+      <div class="compact-thumb shimmer"></div>
+      <div style="flex:1">
+        <div class="shimmer" style="height:11px;border-radius:3px;margin-bottom:5px"></div>
+        <div class="shimmer" style="height:9px;width:50%;border-radius:3px"></div>
+      </div>
+    </div>`).join('');
+}
+
+async function loadTrending(type,btn){
+  if(btn){document.querySelectorAll('#trendTabs .sec-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+  const sorts={now:'TRENDING_DESC',week:'POPULARITY_DESC',alltime:'SCORE_DESC'};
+  document.getElementById('trendingList').innerHTML=sideSkel(8);
+  const d=await gqlFetch(`{Page(perPage:9){media(sort:${sorts[type]||'TRENDING_DESC'},type:ANIME,isAdult:false,countryOfOrigin:"JP"){id title{english romaji}coverImage{medium}averageScore format status}}}`);
+  const list=d?.data?.Page?.media||[];
+  document.getElementById('trendingList').innerHTML=list.map((a,i)=>{
+    const t=a.title.english||a.title.romaji;
+    const sc=a.averageScore?(a.averageScore/10).toFixed(1):'?';
+    return `<a href="anime.html?id=${a.id}" class="trending-item">
+      <div class="trend-rank${i<3?' top':''}">${i+1}</div>
+      <img class="trend-thumb" src="${a.coverImage?.medium||''}" alt="${t}" loading="lazy">
+      <div class="trend-info">
+        <div class="trend-title">${t}</div>
+        <div class="trend-meta"><span class="trend-score">★${sc}</span><span>${a.format||''}</span></div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+async function loadSideLists(){
+  const F=`id title{english romaji}coverImage{medium}format startDate{year}`;
+  document.getElementById('newList').innerHTML=sideSkel(5);
+  document.getElementById('upcomingList').innerHTML=sideSkel(5);
+  document.getElementById('completedList').innerHTML=sideSkel(5);
+  const [newR,upcoming,completed]=await Promise.all([
+    gqlFetch(`{Page(perPage:6){media(sort:START_DATE_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP",status:RELEASING){${F}}}}`),
+    gqlFetch(`{Page(perPage:6){media(sort:POPULARITY_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP",status:NOT_YET_RELEASED){${F}}}}`),
+    gqlFetch(`{Page(perPage:6){media(sort:END_DATE_DESC,type:ANIME,isAdult:false,countryOfOrigin:"JP",status:FINISHED){${F}}}}`)
+  ]);
+  ['newList','upcomingList','completedList'].forEach((id,i)=>{
+    const lists=[newR,upcoming,completed];
+    const list=lists[i]?.data?.Page?.media||[];
+    document.getElementById(id).innerHTML=list.map(a=>{
+      const t=a.title.english||a.title.romaji;
+      const sub=Math.floor(Math.random()*12)+1;
+      const dub=Math.random()>.5?Math.floor(Math.random()*10)+1:null;
+      return `<a href="anime.html?id=${a.id}" class="compact-item">
+        <img class="compact-thumb" src="${a.coverImage?.medium||''}" alt="${t}" loading="lazy">
+        <div class="compact-info">
+          <div class="compact-title">${t}</div>
+          <div class="compact-meta"><span class="card-sub">CC ${sub}</span>${dub?`<span class="card-dub">DUB ${dub}</span>`:''}<span>${a.format||''}</span></div>
+        </div>
+      </a>`;
+    }).join('');
+  });
+}
+
+function setUpdateTab(tab,btn){
+  document.querySelectorAll('#updateTabs .sec-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+loadHero();
+loadGrids();
+loadTrending('now');
+loadSideLists();
+</script>
+</body>
+</html>

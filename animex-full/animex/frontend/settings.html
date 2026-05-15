@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEX — Settings</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.settings-wrap{max-width:800px;margin:0 auto;padding:0 2rem 4rem}
+.sub-hero{padding:2.5rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.sub-hero-title{font-family:var(--font-display);font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-1px;color:var(--white);margin-bottom:.5rem}
+.sub-hero-sub{font-size:14px;color:var(--text2)}
+.settings-layout{display:grid;grid-template-columns:200px 1fr;gap:2rem}
+.settings-nav{flex-shrink:0}
+.settings-nav-item{display:block;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text2);transition:all .2s;cursor:pointer;border:1px solid transparent;margin-bottom:3px}
+.settings-nav-item:hover{background:var(--glass-md);color:var(--text)}
+.settings-nav-item.active{background:var(--glass-hi);color:var(--white);border-color:var(--border)}
+.settings-panel{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem}
+.settings-section{margin-bottom:2rem}
+.settings-section:last-child{margin-bottom:0}
+.settings-section-title{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--white);margin-bottom:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--border)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-info{flex:1;min-width:0;margin-right:1rem}
+.setting-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.setting-desc{font-size:11px;color:var(--text3);line-height:1.4}
+/* TOGGLE */
+.toggle{width:42px;height:24px;border-radius:100px;background:var(--bg4);border:1px solid var(--border);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--white)}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#000;top:2px;left:2px;transition:transform .2s}
+.toggle.on::after{transform:translateX(18px)}
+.setting-select{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-size:12px;color:var(--text);font-family:var(--font-body);outline:none;cursor:pointer;min-width:120px}
+.save-btn{background:var(--white);color:#000;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--font-body);cursor:pointer;transition:all .2s;border:none;margin-top:1.5rem}
+.save-btn:hover{background:#e0e0e0}
+@media(max-width:700px){.settings-layout{grid-template-columns:1fr}.settings-nav{display:flex;gap:4px;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<script>injectNav('');</script>
+<div class="page">
+  <div class="settings-wrap">
+    <div class="sub-hero">
+      <div class="sub-hero-title">Settings</div>
+      <div class="sub-hero-sub">Customize your ANIMEX experience</div>
+    </div>
+    <div class="settings-layout">
+      <div class="settings-nav">
+        <div class="settings-nav-item active" onclick="showPanel('playback')">Playback</div>
+        <div class="settings-nav-item" onclick="showPanel('appearance')">Appearance</div>
+        <div class="settings-nav-item" onclick="showPanel('notifications')">Notifications</div>
+        <div class="settings-nav-item" onclick="showPanel('account')">Account</div>
+        <div class="settings-nav-item" onclick="showPanel('privacy')">Privacy</div>
+      </div>
+      <div class="settings-panel" id="settingsPanel">
+        <!-- Playback -->
+        <div class="settings-section">
+          <div class="settings-section-title">Playback</div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="setting-name">Default Language</div><div class="setting-desc">Preferred audio/subtitle language</div></div>
+            <select class="setting-select"><option>Sub (Japanese)</option><option>Dub (English)</option></select>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="setting-name">Auto-play Next Episode</div><div class="setting-desc">Automatically play the next episode when current ends</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="setting-name">Skip Intro Automatically</div><div class="setting-desc">Skip opening sequences without clicking</div></div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="setting-name">Default Video Quality</div><div class="setting-desc">Preferred stream quality</div></div>
+            <select class="setting-select"><option>Auto</option><option>1080p</option><option>720p</option><option>480p</option></select>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="setting-name">Continue Where Left Off</div><div class="setting-desc">Resume from last watched position</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+        <button class="save-btn" onclick="alert('Saved! (backend needed to persist)')"><i class="fa-solid fa-check"></i> Save Settings</button>
+      </div>
+    </div>
+  </div>
+  <div id="footerMount"></div>
+</div>
+<script>
+document.getElementById('footerMount').innerHTML = buildFooter();
+requireAuthPage();
+
+// Prefill account panel with real user data
+const _u = JSON.parse(localStorage.getItem('animex_user') || '{}');
+const _username = _u.username || _u.email?.split('@')[0] || '';
+const _email = _u.email || '';
+
+const panels = {
+  playback:`<div class="settings-section"><div class="settings-section-title">Playback</div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Default Language</div><div class="setting-desc">Preferred audio/subtitle language</div></div><select class="setting-select"><option>Sub (Japanese)</option><option>Dub (English)</option></select></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Auto-play Next Episode</div><div class="setting-desc">Automatically play next episode when current ends</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Skip Intro Automatically</div><div class="setting-desc">Skip opening sequences without clicking</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Default Video Quality</div><div class="setting-desc">Preferred stream quality</div></div><select class="setting-select"><option>Auto</option><option>1080p</option><option>720p</option><option>480p</option></select></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Continue Where Left Off</div><div class="setting-desc">Resume from last watched position</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+  </div><button class="save-btn" onclick="alert('Saved!')"><i class="fa-solid fa-check"></i> Save Settings</button>`,
+  appearance:`<div class="settings-section"><div class="settings-section-title">Appearance</div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Theme</div><div class="setting-desc">Site color scheme</div></div><select class="setting-select"><option>Dark (Black &amp; White)</option><option>Coming Soon</option></select></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Compact Mode</div><div class="setting-desc">Show smaller cards in grids</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Show Score Badges</div><div class="setting-desc">Display score on anime cards</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Reduce Motion</div><div class="setting-desc">Disable animations and orb effects</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+  </div><button class="save-btn" onclick="alert('Saved!')"><i class="fa-solid fa-check"></i> Save Settings</button>`,
+  notifications:`<div class="settings-section"><div class="settings-section-title">Notifications</div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">New Episode Alerts</div><div class="setting-desc">Notify when a followed anime releases a new episode</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">New Season Announcements</div><div class="setting-desc">Notify when a new season is announced</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Site Updates</div><div class="setting-desc">News about ANIMEX features and changes</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+  </div><button class="save-btn" onclick="alert('Saved!')"><i class="fa-solid fa-check"></i> Save Settings</button>`,
+  account:`<div class="settings-section"><div class="settings-section-title">Account</div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Display Name</div><div class="setting-desc">How others see you</div></div><input id="setUsername" style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-size:12px;color:var(--text);font-family:var(--font-body);outline:none;width:160px" value="${_username}"></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Email</div><div class="setting-desc">Your account email</div></div><input style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-size:12px;color:var(--text);font-family:var(--font-body);outline:none;width:200px" value="${_email}" disabled></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Connect AniList</div><div class="setting-desc">Sync your AniList library</div></div><button class="btn-glass" style="font-size:12px;padding:6px 14px" onclick="alert('AniList OAuth — backend needed!')"><i class="fa-solid fa-link"></i> Connect</button></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Export Data</div><div class="setting-desc">Download your watch history and lists</div></div><button class="btn-glass" style="font-size:12px;padding:6px 14px" onclick="alert('Export — backend needed!')"><i class="fa-solid fa-download"></i> Export</button></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name" style="color:#f87171">Sign Out</div><div class="setting-desc">Sign out of your account on this device</div></div><button class="btn-glass" style="font-size:12px;padding:6px 14px;border-color:rgba(248,113,113,0.3);color:#f87171" onclick="authSignOut()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name" style="color:#f87171">Delete Account</div><div class="setting-desc">Permanently delete all your data</div></div><button class="btn-glass" style="font-size:12px;padding:6px 14px;border-color:rgba(248,113,113,0.3);color:#f87171" onclick="alert('Delete — backend needed!')"><i class="fa-solid fa-trash"></i> Delete</button></div>
+  </div><button class="save-btn" onclick="alert('Saved!')"><i class="fa-solid fa-check"></i> Save Settings</button>`,
+  privacy:`<div class="settings-section"><div class="settings-section-title">Privacy</div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Public Profile</div><div class="setting-desc">Allow others to view your profile</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Show Watch Activity</div><div class="setting-desc">Display your recent watch activity</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="setting-row"><div class="setting-info"><div class="setting-name">Data Collection</div><div class="setting-desc">Help improve ANIMEX with anonymous usage data</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+  </div><button class="save-btn" onclick="alert('Saved!')"><i class="fa-solid fa-check"></i> Save Settings</button>`
+};
+function showPanel(key){
+  document.querySelectorAll('.settings-nav-item').forEach(el=>{el.classList.toggle('active',el.textContent.toLowerCase().includes(key))});
+  document.getElementById('settingsPanel').innerHTML=panels[key]||panels.playback;
+}
+</script>
+</body>
+</html>

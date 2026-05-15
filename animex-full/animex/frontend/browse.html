@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEX — Browse</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.browse-layout{max-width:var(--max-w);margin:0 auto;padding:0 2rem 4rem;display:grid;grid-template-columns:240px 1fr;gap:2rem}
+.filter-col{flex-shrink:0}
+.filter-panel{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;position:sticky;top:calc(var(--nav-h)+48px)}
+.filter-title{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--white);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.filter-title::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--white);display:block}
+.filter-group{margin-bottom:1.2rem}
+.filter-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.filter-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;color:var(--text);font-family:var(--font-body);outline:none;transition:border-color .2s;appearance:none;cursor:pointer}
+.filter-select:focus{border-color:var(--border-hi)}
+.filter-pills{display:flex;flex-wrap:wrap;gap:5px}
+.fpill{font-size:11px;padding:4px 10px;border-radius:100px;background:var(--glass);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .2s}
+.fpill:hover,.fpill.active{background:var(--white);color:#000;border-color:var(--white)}
+.filter-btn{width:100%;padding:9px;border-radius:8px;background:var(--white);color:#000;font-size:13px;font-weight:700;font-family:var(--font-body);cursor:pointer;transition:all .2s;margin-top:.5rem}
+.filter-btn:hover{background:#e0e0e0}
+.filter-clear{width:100%;padding:7px;border-radius:8px;background:var(--glass);border:1px solid var(--border);color:var(--text2);font-size:12px;font-family:var(--font-body);cursor:pointer;transition:all .2s;margin-top:5px}
+.filter-clear:hover{background:var(--glass-hi);color:var(--white)}
+
+.results-col{min-width:0}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px}
+.results-title{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--white)}
+.results-count{font-size:13px;color:var(--text3)}
+.sort-row{display:flex;gap:8px;align-items:center}
+.sort-label{font-size:12px;color:var(--text3)}
+.sort-select{background:var(--glass);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-size:12px;color:var(--text);font-family:var(--font-body);outline:none;cursor:pointer}
+
+.anime-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px;margin-bottom:2rem}
+
+.load-more{display:flex;justify-content:center;margin-top:1.5rem}
+.load-more-btn{padding:11px 32px;border-radius:9px;background:var(--glass-md);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:500;font-family:var(--font-body);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
+.load-more-btn:hover{background:var(--glass-hi);color:var(--white);border-color:var(--border-hi)}
+.load-more-btn:disabled{opacity:.4;pointer-events:none}
+
+@media(max-width:900px){.browse-layout{grid-template-columns:1fr}.filter-panel{position:relative;top:auto}}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<script>injectNav('');</script>
+
+<div class="page">
+  <div class="browse-layout">
+
+    <!-- FILTERS -->
+    <div class="filter-col">
+      <div class="filter-panel">
+        <div class="filter-title">Filter</div>
+
+        <div class="filter-group">
+          <div class="filter-label">Genre</div>
+          <select class="filter-select" id="fGenre">
+            <option value="">All Genres</option>
+            ${['Action','Adventure','Comedy','Drama','Fantasy','Horror','Isekai','Mecha','Mystery','Psychological','Romance','Sci-Fi','Seinen','Shoujo','Shounen','Slice of Life','Sports','Supernatural','Thriller'].map(g=>`<option value="${g}">${g}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Type</div>
+          <select class="filter-select" id="fType">
+            <option value="">All Types</option>
+            <option value="TV">TV Series</option>
+            <option value="MOVIE">Movie</option>
+            <option value="OVA">OVA</option>
+            <option value="ONA">ONA</option>
+            <option value="SPECIAL">Special</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Status</div>
+          <select class="filter-select" id="fStatus">
+            <option value="">All Status</option>
+            <option value="RELEASING">Ongoing</option>
+            <option value="FINISHED">Finished</option>
+            <option value="NOT_YET_RELEASED">Upcoming</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Season</div>
+          <select class="filter-select" id="fSeason">
+            <option value="">Any Season</option>
+            <option value="WINTER">Winter</option>
+            <option value="SPRING">Spring</option>
+            <option value="SUMMER">Summer</option>
+            <option value="FALL">Fall</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Year</div>
+          <select class="filter-select" id="fYear">
+            <option value="">Any Year</option>
+            ${Array.from({length:26},(_,i)=>2025-i).map(y=>`<option value="${y}">${y}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Sort By</div>
+          <select class="filter-select" id="fSort">
+            <option value="TRENDING_DESC">Trending</option>
+            <option value="POPULARITY_DESC">Most Popular</option>
+            <option value="SCORE_DESC">Highest Rated</option>
+            <option value="START_DATE_DESC">Newest</option>
+            <option value="UPDATED_AT_DESC">Recently Updated</option>
+            <option value="TITLE_ROMAJI">A–Z</option>
+          </select>
+        </div>
+
+        <button class="filter-btn" onclick="applyFilters()"><i class="fa-solid fa-magnifying-glass"></i> Apply Filters</button>
+        <button class="filter-clear" onclick="clearFilters()">Clear All</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-col">
+      <div class="results-header">
+        <div>
+          <div class="results-title" id="resultsTitle">Browse Anime</div>
+          <div class="results-count" id="resultsCount"></div>
+        </div>
+      </div>
+      <div class="anime-grid" id="browseGrid"></div>
+      <div class="load-more">
+        <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()">
+          <i class="fa-solid fa-plus"></i> Load More
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <div id="footerMount"></div>
+</div>
+
+<script>
+document.getElementById('footerMount').innerHTML = buildFooter();
+
+let currentPage = 1, hasNextPage = true, loading = false;
+let activeFilters = {};
+
+const F = `id title{english romaji}coverImage{large}averageScore episodes status format startDate{year}`;
+
+function buildQuery(page=1){
+  const genre = document.getElementById('fGenre').value;
+  const type  = document.getElementById('fType').value;
+  const status= document.getElementById('fStatus').value;
+  const season= document.getElementById('fSeason').value;
+  const year  = document.getElementById('fYear').value;
+  const sort  = document.getElementById('fSort').value || 'TRENDING_DESC';
+
+  let args = `sort:${sort},type:ANIME,isAdult:false,countryOfOrigin:"JP",page:${page},perPage:24`;
+  if(genre)  args += `,genre:"${genre}"`;
+  if(type)   args += `,format:${type}`;
+  if(status) args += `,status:${status}`;
+  if(season) args += `,season:${season}`;
+  if(year)   args += `,seasonYear:${year}`;
+
+  return `{Page(${args}){pageInfo{hasNextPage total}media{${F}}}}`;
+}
+
+async function loadBrowse(reset=false){
+  if(loading) return;
+  loading = true;
+  if(reset){ currentPage=1; hasNextPage=true; document.getElementById('browseGrid').innerHTML=skelCards(24); }
+  document.getElementById('loadMoreBtn').disabled = true;
+  document.getElementById('loadMoreBtn').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Loading...';
+
+  const d = await gqlFetch(buildQuery(currentPage));
+  const media = d?.data?.Page?.media||[];
+  const info  = d?.data?.Page?.pageInfo;
+  hasNextPage = info?.hasNextPage||false;
+
+  const grid = document.getElementById('browseGrid');
+  if(reset) grid.innerHTML = '';
+  grid.innerHTML += media.map(a=>buildCard(a)).join('');
+
+  const total = info?.total;
+  if(total) document.getElementById('resultsCount').textContent = `${total.toLocaleString()} results`;
+
+  document.getElementById('loadMoreBtn').disabled = !hasNextPage;
+  document.getElementById('loadMoreBtn').innerHTML = '<i class="fa-solid fa-plus"></i> Load More';
+  loading = false;
+}
+
+function loadMore(){ if(hasNextPage&&!loading){ currentPage++; loadBrowse(false); } }
+
+function applyFilters(){
+  const genre = document.getElementById('fGenre').value;
+  const type  = {TV:'TV Series',MOVIE:'Movies',OVA:'OVAs',ONA:'ONAs',SPECIAL:'Specials'}[document.getElementById('fType').value]||'';
+  const parts = [genre,type].filter(Boolean);
+  document.getElementById('resultsTitle').textContent = parts.length ? parts.join(' · ') : 'Browse Anime';
+  loadBrowse(true);
+}
+
+function clearFilters(){
+  ['fGenre','fType','fStatus','fSeason','fYear'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fSort').value='TRENDING_DESC';
+  document.getElementById('resultsTitle').textContent='Browse Anime';
+  loadBrowse(true);
+}
+
+// Handle URL params
+function handleParams(){
+  const p = new URLSearchParams(location.search);
+  const genre  = p.get('genre');
+  const type   = p.get('type');
+  const filter = p.get('filter');
+  const search = p.get('search');
+  const letter = p.get('letter');
+
+  if(genre){ document.getElementById('fGenre').value=genre; document.getElementById('resultsTitle').textContent=genre; }
+  if(type){ const m={movie:'MOVIE',tv:'TV',ova:'OVA',ona:'ONA',special:'SPECIAL'}; document.getElementById('fType').value=m[type]||''; }
+  if(filter==='ongoing') document.getElementById('fStatus').value='RELEASING';
+  if(filter==='new') document.getElementById('fSort').value='START_DATE_DESC';
+  if(filter==='updates') document.getElementById('fSort').value='UPDATED_AT_DESC';
+
+  if(search){
+    document.getElementById('resultsTitle').textContent=`Results for "${search}"`;
+    document.getElementById('browseGrid').innerHTML=skelCards(24);
+    gqlFetch(`query($s:String){Page(perPage:24){pageInfo{hasNextPage total}media(search:$s,type:ANIME,isAdult:false){${F}}}}`,{s:search}).then(d=>{
+      const media=d?.data?.Page?.media||[];
+      const total=d?.data?.Page?.pageInfo?.total;
+      document.getElementById('browseGrid').innerHTML=media.map(a=>buildCard(a)).join('');
+      if(total) document.getElementById('resultsCount').textContent=`${total.toLocaleString()} results`;
+      document.getElementById('loadMoreBtn').style.display='none';
+    });
+    return;
+  }
+
+  loadBrowse(true);
+}
+
+handleParams();
+</script>
+</body>
+</html>

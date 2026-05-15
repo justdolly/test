@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEX — About</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.subpage-wrap{max-width:800px;margin:0 auto;padding:0 2rem 4rem}
+.sub-hero{padding:3rem 0 2.5rem;text-align:center;border-bottom:1px solid var(--border);margin-bottom:3rem}
+.sub-logo{font-family:var(--font-display);font-size:52px;font-weight:700;letter-spacing:5px;color:var(--white);margin-bottom:.8rem}
+.sub-logo span{color:var(--text3)}
+.sub-hero-sub{font-size:16px;color:var(--text2);line-height:1.7;max-width:500px;margin:0 auto}
+.content-block{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem}
+.content-block h2{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--white);margin-bottom:1rem;display:flex;align-items:center;gap:10px}
+.content-block p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:.8rem}
+.content-block p:last-child{margin-bottom:0}
+.stat-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.2rem}
+.stat-pill{background:var(--glass-md);border:1px solid var(--border);border-radius:10px;padding:14px 20px;text-align:center;flex:1;min-width:120px}
+.sp-val{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--white);display:block}
+.sp-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:1rem}
+.tech-item{background:var(--glass);border:1px solid var(--border);border-radius:9px;padding:12px;text-align:center}
+.tech-name{font-size:13px;font-weight:600;color:var(--text)}
+.tech-desc{font-size:11px;color:var(--text3);margin-top:2px}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<script>injectNav('');</script>
+<div class="page">
+  <div class="subpage-wrap">
+    <div class="sub-hero">
+      <div class="sub-logo">ANIME<span>X</span></div>
+      <p class="sub-hero-sub">A personal anime streaming platform built for fans who care about speed, quality, and a clean experience.</p>
+    </div>
+
+    <div class="content-block">
+      <h2><i class="fa-solid fa-circle-info" style="opacity:.5"></i> What is ANIMEX?</h2>
+      <p>ANIMEX is a self-hosted anime streaming frontend designed to give you a premium viewing experience. Built from scratch with a focus on design, performance, and usability — no bloat, no ads, no nonsense.</p>
+      <p>The platform pulls anime metadata from the AniList API, giving you accurate scores, descriptions, character info, and related titles for every show in the library.</p>
+      <div class="stat-pills">
+        <div class="stat-pill"><span class="sp-val">10K+</span><div class="sp-lbl">Anime Titles</div></div>
+        <div class="stat-pill"><span class="sp-val">HD</span><div class="sp-lbl">Stream Quality</div></div>
+        <div class="stat-pill"><span class="sp-val">Sub+Dub</span><div class="sp-lbl">Both Available</div></div>
+        <div class="stat-pill"><span class="sp-val">Daily</span><div class="sp-lbl">New Episodes</div></div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h2><i class="fa-solid fa-code" style="opacity:.5"></i> Built With</h2>
+      <p>ANIMEX is a pure frontend — HTML, CSS, and vanilla JavaScript. No frameworks, no build tools. Just fast, clean code that runs anywhere.</p>
+      <div class="tech-grid">
+        <div class="tech-item"><div class="tech-name">AniList API</div><div class="tech-desc">Anime metadata & scores</div></div>
+        <div class="tech-item"><div class="tech-name">Clash Display</div><div class="tech-desc">Display typography</div></div>
+        <div class="tech-item"><div class="tech-name">Satoshi</div><div class="tech-desc">Body typography</div></div>
+        <div class="tech-item"><div class="tech-name">Font Awesome</div><div class="tech-desc">Icons</div></div>
+        <div class="tech-item"><div class="tech-name">Vanilla JS</div><div class="tech-desc">No frameworks</div></div>
+        <div class="tech-item"><div class="tech-name">CSS Variables</div><div class="tech-desc">Theming system</div></div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h2><i class="fa-solid fa-heart" style="opacity:.5"></i> For Personal Use</h2>
+      <p>ANIMEX is built for personal use. All anime data is sourced from the AniList public API. Anime titles, scores, descriptions, and artwork are property of their respective owners and studios.</p>
+      <p>If you're a rights holder and have concerns about content, please visit our <a href="dmca.html" style="color:var(--white);text-decoration:underline;text-underline-offset:3px">DMCA page</a> or <a href="contact.html" style="color:var(--white);text-decoration:underline;text-underline-offset:3px">contact us</a> directly.</p>
+    </div>
+  </div>
+  <div id="footerMount"></div>
+</div>
+<script>document.getElementById('footerMount').innerHTML = buildFooter();</script>
+</body>
+</html>

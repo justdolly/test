@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMEX — Contact</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.subpage-wrap{max-width:800px;margin:0 auto;padding:0 2rem 4rem}
+.sub-hero{padding:2.5rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.sub-hero-title{font-family:var(--font-display);font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-1px;color:var(--white);margin-bottom:.5rem}
+.sub-hero-sub{font-size:14px;color:var(--text2)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.contact-form{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem}
+.contact-form h2{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--white);margin-bottom:1.2rem}
+.cf-group{margin-bottom:12px}
+.cf-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;display:block}
+.cf-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--text);font-family:var(--font-body);outline:none;transition:border-color .2s}
+.cf-input:focus{border-color:var(--border-hi)}
+.cf-input::placeholder{color:var(--text3)}
+.cf-textarea{min-height:120px;resize:vertical}
+.cf-btn{width:100%;padding:10px;border-radius:8px;background:var(--white);color:#000;font-size:13px;font-weight:700;font-family:var(--font-body);cursor:pointer;transition:all .2s;border:none;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:7px}
+.cf-btn:hover{background:#e0e0e0}
+.contact-info{display:flex;flex-direction:column;gap:12px}
+.info-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;display:flex;gap:12px;align-items:flex-start}
+.info-icon{width:38px;height:38px;border-radius:9px;background:var(--glass-md);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);flex-shrink:0}
+.info-title{font-size:13px;font-weight:600;color:var(--white);margin-bottom:3px}
+.info-text{font-size:12px;color:var(--text3);line-height:1.5}
+@media(max-width:700px){.contact-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<script>injectNav('');</script>
+<div class="page">
+  <div class="subpage-wrap">
+    <div class="sub-hero">
+      <div class="sub-hero-title">Contact Us</div>
+      <div class="sub-hero-sub">Have a question, request, or issue? Reach out below.</div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-form">
+        <h2>Send a Message</h2>
+        <div class="cf-group"><label class="cf-label">Your Name</label><input type="text" class="cf-input" placeholder="John Doe"></div>
+        <div class="cf-group"><label class="cf-label">Email</label><input type="email" class="cf-input" placeholder="you@example.com"></div>
+        <div class="cf-group">
+          <label class="cf-label">Subject</label>
+          <select class="cf-input" style="appearance:none;cursor:pointer">
+            <option>General Question</option>
+            <option>Anime Request</option>
+            <option>Bug Report</option>
+            <option>DMCA / Copyright</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="cf-group"><label class="cf-label">Message</label><textarea class="cf-input cf-textarea" placeholder="What's on your mind?"></textarea></div>
+        <button class="cf-btn" onclick="alert('Message sent! (backend needed)')"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+      </div>
+      <div class="contact-info">
+        <div class="info-card"><div class="info-icon"><i class="fa-solid fa-envelope"></i></div><div><div class="info-title">Email</div><div class="info-text">contact@animex.com<br>We respond within 24–48 hours.</div></div></div>
+        <div class="info-card"><div class="info-icon"><i class="fa-solid fa-film"></i></div><div><div class="info-title">Anime Requests</div><div class="info-text">Use the request form on the homepage or email us with the anime title and year.</div></div></div>
+        <div class="info-card"><div class="info-icon"><i class="fa-solid fa-bug"></i></div><div><div class="info-title">Bug Reports</div><div class="info-text">Found a broken stream or UI issue? Let us know with the page URL and what happened.</div></div></div>
+        <div class="info-card"><div class="info-icon"><i class="fa-solid fa-shield"></i></div><div><div class="info-title">Copyright / DMCA</div><div class="info-text">For copyright concerns, please see our <a href="dmca.html" style="color:var(--white)">DMCA page</a> for the fastest response.</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div id="footerMount"></div>
+</div>
+<script>document.getElementById('footerMount').innerHTML = buildFooter();</script>
+</body>
+</html>
